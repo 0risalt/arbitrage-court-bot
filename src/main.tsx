@@ -111,7 +111,7 @@ const Home = ({ onNavigate }) => {
       style: styles.imageContainer
     },
       React.createElement('img', {
-        src: '/src/assets/images/arbcourt.jpg',
+        src: '/images/arbcourt.jpg',
         alt: 'Арбитражный суд',
         style: styles.headerImage
       })
@@ -129,7 +129,7 @@ const Home = ({ onNavigate }) => {
           onClick: () => onNavigate('requisites'),
           style: {
             ...styles.menuButton,
-            backgroundImage: 'url(/src/assets/images/detailsbtn.svg)'
+            backgroundImage: 'url(/images/detailsbtn.svg)'
           }
         }),
 
@@ -138,7 +138,7 @@ const Home = ({ onNavigate }) => {
           onClick: () => onNavigate('case-status'),
           style: {
             ...styles.menuButton,
-            backgroundImage: 'url(/src/assets/images/casestatusbtn.svg)'
+            backgroundImage: 'url(/images/casestatusbtn.svg)'
           }
         })
       ]),
@@ -149,7 +149,7 @@ const Home = ({ onNavigate }) => {
           onClick: () => onNavigate('schedule'),
           style: {
             ...styles.menuButton,
-            backgroundImage: 'url(/src/assets/images/shedulebtn.svg)'
+            backgroundImage: 'url(/images/shedulebtn.svg)'
           }
         }),
 
@@ -158,7 +158,7 @@ const Home = ({ onNavigate }) => {
           onClick: () => onNavigate('contacts'),
           style: {
             ...styles.menuButton,
-            backgroundImage: 'url(/src/assets/images/contactsbtn.svg)'
+            backgroundImage: 'url(/images/contactsbtn.svg)'
           }
         })
       ]),
@@ -168,7 +168,7 @@ const Home = ({ onNavigate }) => {
         onClick: () => onNavigate('help'),
         style: {
           ...styles.helpButton,
-          backgroundImage: 'url(/src/assets/images/helpbtn.svg)'
+          backgroundImage: 'url(/images/helpbtn.svg)'
         }
       })
     ])
