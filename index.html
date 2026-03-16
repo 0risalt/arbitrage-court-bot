@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Арбитражный суд Иркутской области</title>
+
+  <!-- Шрифт Golos Text -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Golos Text', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #f0f2f5;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    #root {
+      max-width: 375px;
+      width: 100%;
+      background-color: #ffffff;
+      min-height: 100vh;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+      position: relative;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="root"></div>
+
+  <!-- Библиотеки в правильном порядке -->
+  <script src="/libs/react.production.min.js"></script>
+  <script src="/libs/react-dom.production.min.js"></script>
+  <script src="/libs/history.production.min.js"></script>
+  <script src="/libs/react-router.production.min.js"></script>
+  <script src="/libs/react-router-dom.production.min.js"></script>
+
+  <script>
+    // Проверка загрузки библиотек
+    console.log('=== ЗАГРУЗКА БИБЛИОТЕК ===');
+    console.log('✅ React:', !!window.React);
+    console.log('✅ ReactDOM:', !!window.ReactDOM);
+    console.log('✅ History:', !!window.History);
+    console.log('✅ ReactRouter:', !!window.ReactRouter);
+    console.log('✅ ReactRouterDOM:', !!window.ReactRouterDOM);
+
+    // Делаем библиотеки доступными глобально
+    window.React = window.React || {};
+    window.ReactDOM = window.ReactDOM || {};
+    window.ReactRouterDOM = window.ReactRouterDOM || {};
+  </script>
+
+  <!-- Основной файл приложения -->
+  <script type="module" src="/src/main.tsx"></script>
+</body>
+
+</html>
