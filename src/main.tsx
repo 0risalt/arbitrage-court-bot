@@ -40,16 +40,23 @@ const BackButton = ({ onClick }) => {
   }, '← Назад');
 };
 
-// Компонент кнопки с яркой анимацией для всех кнопок меню
+// Компонент кнопки с яркой анимацией (работает с SVG)
 const AnimatedButton = ({ onClick, children, style }) => {
   const [isPressed, setIsPressed] = useState(false);
   const [ripple, setRipple] = useState(false);
+  const [ripplePosition, setRipplePosition] = useState({ x: 0, y: 0 });
 
   const handleClick = (e) => {
+    // Получаем координаты клика для ripple
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    setRipplePosition({ x, y });
+
     setIsPressed(true);
     setRipple(true);
     setTimeout(() => setIsPressed(false), 150);
-    setTimeout(() => setRipple(false), 400);
+    setTimeout(() => setRipple(false), 500);
     onClick(e);
   };
 
@@ -59,29 +66,32 @@ const AnimatedButton = ({ onClick, children, style }) => {
       ...style,
       cursor: 'pointer',
       transition: 'all 0.15s cubic-bezier(0.2, 0.9, 0.4, 1.1)',
-      transform: isPressed ? 'scale(0.94) rotate(-0.5deg)' : 'scale(1) rotate(0deg)',
+      transform: isPressed ? 'scale(0.96)' : 'scale(1)',
       boxShadow: isPressed
         ? '0 2px 4px rgba(0,0,0,0.2)'
         : '0 6px 12px rgba(0,0,0,0.15)',
-      filter: isPressed ? 'brightness(0.85)' : 'brightness(1)',
+      filter: isPressed ? 'brightness(0.88)' : 'brightness(1)',
       position: 'relative',
       overflow: 'hidden'
     }
   }, [
+    // Контент кнопки (SVG фон или текст)
     children,
+    // Ripple эффект поверх всего
     ripple && React.createElement('span', {
       key: 'ripple',
       style: {
         position: 'absolute',
-        top: '50%',
-        left: '50%',
-        width: '100%',
-        height: '100%',
-        background: 'rgba(255,255,255,0.4)',
+        top: ripplePosition.y,
+        left: ripplePosition.x,
+        width: '10px',
+        height: '10px',
+        background: 'rgba(255, 255, 255, 0.7)',
         borderRadius: '50%',
         transform: 'translate(-50%, -50%) scale(0)',
-        animation: 'ripple 0.4s ease-out',
-        pointerEvents: 'none'
+        animation: 'ripple 0.5s ease-out',
+        pointerEvents: 'none',
+        zIndex: 10
       }
     })
   ]);
