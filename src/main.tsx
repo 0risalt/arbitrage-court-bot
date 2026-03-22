@@ -9,21 +9,16 @@ const React = window.React;
 const ReactDOM = window.ReactDOM;
 const { useState, useEffect } = React;
 
-// Компонент кнопки "Назад" с яркой анимацией
+// Компонент кнопки "Назад" с CSS-анимацией
 const BackButton = ({ onClick }) => {
-  const [isPressed, setIsPressed] = useState(false);
-
   return React.createElement('button', {
-    onClick: (e) => {
-      setIsPressed(true);
-      setTimeout(() => setIsPressed(false), 200);
-      onClick(e);
-    },
+    onClick: onClick,
+    className: 'button-click-effect',
     style: {
       position: 'fixed',
       top: '10px',
       left: '10px',
-      background: isPressed ? '#1a2e6b' : '#12204D',
+      background: '#12204D',
       color: 'white',
       border: 'none',
       borderRadius: '8px',
@@ -32,69 +27,21 @@ const BackButton = ({ onClick }) => {
       fontFamily: 'Golos Text, sans-serif',
       cursor: 'pointer',
       zIndex: 1000,
-      boxShadow: isPressed ? '0 1px 2px rgba(0,0,0,0.2)' : '0 2px 5px rgba(0,0,0,0.2)',
-      transform: isPressed ? 'scale(0.92)' : 'scale(1)',
-      transition: 'all 0.1s ease-out',
-      opacity: isPressed ? 0.8 : 1
+      boxShadow: '0 2px 5px rgba(0,0,0,0.2)'
     }
   }, '← Назад');
 };
 
-// Компонент кнопки с яркой анимацией (работает с SVG)
+// Компонент кнопки с CSS-анимацией (гарантированно работает на SVG)
 const AnimatedButton = ({ onClick, children, style }) => {
-  const [isPressed, setIsPressed] = useState(false);
-  const [ripple, setRipple] = useState(false);
-  const [ripplePosition, setRipplePosition] = useState({ x: 0, y: 0 });
-
-  const handleClick = (e) => {
-    // Получаем координаты клика для ripple
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    setRipplePosition({ x, y });
-
-    setIsPressed(true);
-    setRipple(true);
-    setTimeout(() => setIsPressed(false), 150);
-    setTimeout(() => setRipple(false), 500);
-    onClick(e);
-  };
-
   return React.createElement('button', {
-    onClick: handleClick,
+    onClick: onClick,
+    className: 'button-click-effect',
     style: {
       ...style,
-      cursor: 'pointer',
-      transition: 'all 0.15s cubic-bezier(0.2, 0.9, 0.4, 1.1)',
-      transform: isPressed ? 'scale(0.96)' : 'scale(1)',
-      boxShadow: isPressed
-        ? '0 2px 4px rgba(0,0,0,0.2)'
-        : '0 6px 12px rgba(0,0,0,0.15)',
-      filter: isPressed ? 'brightness(0.88)' : 'brightness(1)',
-      position: 'relative',
-      overflow: 'hidden'
+      cursor: 'pointer'
     }
-  }, [
-    // Контент кнопки (SVG фон или текст)
-    children,
-    // Ripple эффект поверх всего
-    ripple && React.createElement('span', {
-      key: 'ripple',
-      style: {
-        position: 'absolute',
-        top: ripplePosition.y,
-        left: ripplePosition.x,
-        width: '10px',
-        height: '10px',
-        background: 'rgba(255, 255, 255, 0.7)',
-        borderRadius: '50%',
-        transform: 'translate(-50%, -50%) scale(0)',
-        animation: 'ripple 0.5s ease-out',
-        pointerEvents: 'none',
-        zIndex: 10
-      }
-    })
-  ]);
+  }, children);
 };
 
 // Главная страница
@@ -428,6 +375,7 @@ const CaseStatus = ({ onBack }) => {
       React.createElement('button', {
         key: 'number',
         onClick: () => setSearchMode('number'),
+        className: 'button-click-effect',
         style: {
           ...styles.modeButton,
           ...(searchMode === 'number' ? styles.activeMode : {})
@@ -437,6 +385,7 @@ const CaseStatus = ({ onBack }) => {
       React.createElement('button', {
         key: 'inn',
         onClick: () => setSearchMode('inn'),
+        className: 'button-click-effect',
         style: {
           ...styles.modeButton,
           ...(searchMode === 'inn' ? styles.activeMode : {})
