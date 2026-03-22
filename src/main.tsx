@@ -573,20 +573,20 @@ const Contacts = ({ onBack }) => {
       alignItems: 'center',
       padding: '10px 0',
       borderBottom: '1px dashed #e9ecef',
-      flexWrap: 'wrap',  // Разрешает перенос, но старается держать в одной строке
+      flexWrap: 'wrap',
       gap: '8px'
     },
     phoneDept: {
       color: '#6F7B8C',
       fontSize: '15px',
-      flexShrink: 0  // Не сжимает название
+      flexShrink: 0
     },
     phoneNum: {
       fontWeight: 600,
       color: '#12204D',
       fontSize: '15px',
       textAlign: 'right',
-      flexShrink: 0  // Не сжимает номер
+      flexShrink: 0
     }
   };
 
@@ -597,9 +597,9 @@ const Contacts = ({ onBack }) => {
     { dept: 'Отдел делопроизводства', num: '8 (3952) 20-10-03' }
   ];
 
-  // Координаты Арбитражного суда Иркутской области (ул. Седова, 76)
-  // Широта: 52.280, Долгота: 104.303
-  const mapUrl = 'https://yandex.ru/map-widget/v1/?um=constructor%3A1&source=constructor&ll=104.303%2C52.280&z=17&pt=104.303%2C52.280%2Cpm2orgm';
+  // Правильные координаты для ул. Седова, 76, Иркутск
+  // Яндекс карта с меткой на Седова 76
+  const mapUrl = 'https://yandex.ru/map-widget/v1/?um=constructor%3A1&source=constructor&ll=104.283500%2C52.278500&z=17&pt=104.283500%2C52.278500%2Cpm2orgm';
 
   return React.createElement('div', { style: styles.container }, [
     React.createElement(BackButton, { key: 'back', onClick: onBack }),
