@@ -9,21 +9,21 @@ const React = window.React;
 const ReactDOM = window.ReactDOM;
 const { useState, useEffect } = React;
 
-// Компонент кнопки "Назад" с анимацией
+// Компонент кнопки "Назад" с яркой анимацией
 const BackButton = ({ onClick }) => {
   const [isPressed, setIsPressed] = useState(false);
 
   return React.createElement('button', {
     onClick: (e) => {
       setIsPressed(true);
-      setTimeout(() => setIsPressed(false), 150);
+      setTimeout(() => setIsPressed(false), 200);
       onClick(e);
     },
     style: {
       position: 'fixed',
       top: '10px',
       left: '10px',
-      background: '#12204D',
+      background: isPressed ? '#1a2e6b' : '#12204D',
       color: 'white',
       border: 'none',
       borderRadius: '8px',
@@ -33,30 +33,58 @@ const BackButton = ({ onClick }) => {
       cursor: 'pointer',
       zIndex: 1000,
       boxShadow: isPressed ? '0 1px 2px rgba(0,0,0,0.2)' : '0 2px 5px rgba(0,0,0,0.2)',
-      transform: isPressed ? 'scale(0.95)' : 'scale(1)',
-      transition: 'transform 0.1s, box-shadow 0.1s'
+      transform: isPressed ? 'scale(0.92)' : 'scale(1)',
+      transition: 'all 0.1s ease-out',
+      opacity: isPressed ? 0.8 : 1
     }
   }, '← Назад');
 };
 
-// Компонент кнопки с анимацией нажатия
+// Компонент кнопки с яркой анимацией для всех кнопок меню
 const AnimatedButton = ({ onClick, children, style }) => {
   const [isPressed, setIsPressed] = useState(false);
+  const [ripple, setRipple] = useState(false);
+
+  const handleClick = (e) => {
+    setIsPressed(true);
+    setRipple(true);
+    setTimeout(() => setIsPressed(false), 150);
+    setTimeout(() => setRipple(false), 400);
+    onClick(e);
+  };
 
   return React.createElement('button', {
-    onClick: (e) => {
-      setIsPressed(true);
-      setTimeout(() => setIsPressed(false), 150);
-      onClick(e);
-    },
+    onClick: handleClick,
     style: {
       ...style,
       cursor: 'pointer',
-      transition: 'transform 0.1s, box-shadow 0.1s, opacity 0.2s',
-      transform: isPressed ? 'scale(0.97)' : 'scale(1)',
-      boxShadow: isPressed ? '0 1px 3px rgba(0,0,0,0.1)' : (style.boxShadow || '0 2px 8px rgba(0,0,0,0.1)')
+      transition: 'all 0.15s cubic-bezier(0.2, 0.9, 0.4, 1.1)',
+      transform: isPressed ? 'scale(0.94) rotate(-0.5deg)' : 'scale(1) rotate(0deg)',
+      boxShadow: isPressed
+        ? '0 2px 4px rgba(0,0,0,0.2)'
+        : '0 6px 12px rgba(0,0,0,0.15)',
+      filter: isPressed ? 'brightness(0.85)' : 'brightness(1)',
+      position: 'relative',
+      overflow: 'hidden'
     }
-  }, children);
+  }, [
+    children,
+    ripple && React.createElement('span', {
+      key: 'ripple',
+      style: {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        width: '100%',
+        height: '100%',
+        background: 'rgba(255,255,255,0.4)',
+        borderRadius: '50%',
+        transform: 'translate(-50%, -50%) scale(0)',
+        animation: 'ripple 0.4s ease-out',
+        pointerEvents: 'none'
+      }
+    })
+  ]);
 };
 
 // Главная страница
@@ -116,9 +144,7 @@ const Home = ({ onNavigate }) => {
       backgroundSize: 'cover',
       backgroundPosition: 'center',
       backgroundRepeat: 'no-repeat',
-      cursor: 'pointer',
-      transition: 'transform 0.1s, box-shadow 0.1s',
-      boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+      cursor: 'pointer'
     },
     helpButton: {
       width: '331px',
@@ -129,27 +155,8 @@ const Home = ({ onNavigate }) => {
       backgroundPosition: 'center',
       backgroundRepeat: 'no-repeat',
       cursor: 'pointer',
-      marginTop: '5px',
-      transition: 'transform 0.1s, box-shadow 0.1s',
-      boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+      marginTop: '5px'
     }
-  };
-
-  // Кнопка с анимацией
-  const ButtonWithAnimation = ({ onClick, children, buttonStyle }) => {
-    const [isPressed, setIsPressed] = useState(false);
-    return React.createElement('button', {
-      onClick: (e) => {
-        setIsPressed(true);
-        setTimeout(() => setIsPressed(false), 150);
-        onClick(e);
-      },
-      style: {
-        ...buttonStyle,
-        transform: isPressed ? 'scale(0.97)' : 'scale(1)',
-        transition: 'transform 0.1s, box-shadow 0.1s'
-      }
-    }, children);
   };
 
   return React.createElement('div', { style: styles.container }, [
@@ -171,45 +178,45 @@ const Home = ({ onNavigate }) => {
 
     React.createElement('div', { key: 'menu', style: styles.menuGrid }, [
       React.createElement('div', { key: 'row1', style: styles.buttonsRow }, [
-        React.createElement(ButtonWithAnimation, {
+        React.createElement(AnimatedButton, {
           key: 'details',
           onClick: () => onNavigate('requisites'),
-          buttonStyle: {
+          style: {
             ...styles.menuButton,
             backgroundImage: 'url(/images/detailsbtn.svg)'
           }
         }),
-        React.createElement(ButtonWithAnimation, {
+        React.createElement(AnimatedButton, {
           key: 'case',
           onClick: () => onNavigate('case-status'),
-          buttonStyle: {
+          style: {
             ...styles.menuButton,
             backgroundImage: 'url(/images/casestatusbtn.svg)'
           }
         })
       ]),
       React.createElement('div', { key: 'row2', style: styles.buttonsRow }, [
-        React.createElement(ButtonWithAnimation, {
+        React.createElement(AnimatedButton, {
           key: 'schedule',
           onClick: () => onNavigate('schedule'),
-          buttonStyle: {
+          style: {
             ...styles.menuButton,
             backgroundImage: 'url(/images/shedulebtn.svg)'
           }
         }),
-        React.createElement(ButtonWithAnimation, {
+        React.createElement(AnimatedButton, {
           key: 'contacts',
           onClick: () => onNavigate('contacts'),
-          buttonStyle: {
+          style: {
             ...styles.menuButton,
             backgroundImage: 'url(/images/contactsbtn.svg)'
           }
         })
       ]),
-      React.createElement(ButtonWithAnimation, {
+      React.createElement(AnimatedButton, {
         key: 'help',
         onClick: () => onNavigate('help'),
-        buttonStyle: {
+        style: {
           ...styles.helpButton,
           backgroundImage: 'url(/images/helpbtn.svg)'
         }
@@ -389,8 +396,7 @@ const CaseStatus = ({ onBack }) => {
       borderRadius: '10px',
       fontSize: '18px',
       cursor: 'pointer',
-      fontFamily: 'Golos Text, sans-serif',
-      transition: 'transform 0.1s, background-color 0.2s'
+      fontFamily: 'Golos Text, sans-serif'
     },
     hint: { color: '#6F7B8C', fontSize: '14px', marginBottom: '15px' },
     card: {
@@ -535,7 +541,7 @@ const Schedule = ({ onBack }) => {
       React.createElement('h3', { key: 'judgesTitle', style: styles.sectionTitle }, '👨‍⚖️ График заседаний судей'),
       React.createElement('div', { key: 'judgesList', style: { display: 'flex', flexDirection: 'column', gap: '8px' } },
         judgeNames.map(judge =>
-          React.createElement('button', {
+          React.createElement(AnimatedButton, {
             key: judge,
             onClick: () => setSelectedJudge(selectedJudge === judge ? null : judge),
             style: {
@@ -556,8 +562,7 @@ const Schedule = ({ onBack }) => {
   ]);
 };
 
-// Страница контактов (с картой)
-// Страница контактов (с картой и исправленным отображением телефонов)
+// Страница контактов (с картой и правильными координатами)
 const Contacts = ({ onBack }) => {
   const styles = {
     container: { padding: '22px', backgroundColor: '#ffffff', minHeight: '100vh' },
@@ -598,9 +603,7 @@ const Contacts = ({ onBack }) => {
   ];
 
   // Правильные координаты для ул. Седова, 76, Иркутск
-  // Яндекс карта с меткой на Седова 76
-  // Правильные координаты для ул. Седова, 76, Иркутск
-  const mapUrl = 'https://yandex.ru/map-widget/v1/?um=constructor%3A1&source=constructor&ll=104.283500%2C52.278500&z=17&pt=104.283500%2C52.278500%2Cpm2orgm';
+  const mapUrl = 'https://yandex.ru/map-widget/v1/?um=constructor%3A1&source=constructor&ll=104.301348%2C52.268204&z=16.38&pt=104.301348%2C52.268204%2Cpm2orgm';
 
   return React.createElement('div', { style: styles.container }, [
     React.createElement(BackButton, { key: 'back', onClick: onBack }),
@@ -701,7 +704,6 @@ const Help = ({ onBack }) => {
 const App = () => {
   const [currentPage, setCurrentPage] = useState('home');
 
-  // Инициализация Telegram WebApp
   useEffect(() => {
     const tg = window.Telegram?.WebApp;
     if (tg) {
