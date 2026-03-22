@@ -599,6 +599,7 @@ const Contacts = ({ onBack }) => {
 
   // Правильные координаты для ул. Седова, 76, Иркутск
   // Яндекс карта с меткой на Седова 76
+  // Правильные координаты для ул. Седова, 76, Иркутск
   const mapUrl = 'https://yandex.ru/map-widget/v1/?um=constructor%3A1&source=constructor&ll=104.283500%2C52.278500&z=17&pt=104.283500%2C52.278500%2Cpm2orgm';
 
   return React.createElement('div', { style: styles.container }, [
