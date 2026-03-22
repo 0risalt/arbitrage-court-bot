@@ -557,6 +557,7 @@ const Schedule = ({ onBack }) => {
 };
 
 // Страница контактов (с картой)
+// Страница контактов (с картой и исправленным отображением телефонов)
 const Contacts = ({ onBack }) => {
   const styles = {
     container: { padding: '22px', backgroundColor: '#ffffff', minHeight: '100vh' },
@@ -566,7 +567,27 @@ const Contacts = ({ onBack }) => {
     label: { color: '#6F7B8C', fontSize: '14px', marginBottom: '4px' },
     value: { color: '#12204D', fontWeight: 500, fontSize: '16px' },
     mapContainer: { marginTop: '15px', borderRadius: '10px', overflow: 'hidden', height: '200px' },
-    phoneRow: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 0', borderBottom: '1px dashed #e9ecef' }
+    phoneRow: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      padding: '10px 0',
+      borderBottom: '1px dashed #e9ecef',
+      flexWrap: 'wrap',  // Разрешает перенос, но старается держать в одной строке
+      gap: '8px'
+    },
+    phoneDept: {
+      color: '#6F7B8C',
+      fontSize: '15px',
+      flexShrink: 0  // Не сжимает название
+    },
+    phoneNum: {
+      fontWeight: 600,
+      color: '#12204D',
+      fontSize: '15px',
+      textAlign: 'right',
+      flexShrink: 0  // Не сжимает номер
+    }
   };
 
   const phones = [
@@ -575,6 +596,10 @@ const Contacts = ({ onBack }) => {
     { dept: 'Справочная', num: '8 (3952) 20-10-00' },
     { dept: 'Отдел делопроизводства', num: '8 (3952) 20-10-03' }
   ];
+
+  // Координаты Арбитражного суда Иркутской области (ул. Седова, 76)
+  // Широта: 52.280, Долгота: 104.303
+  const mapUrl = 'https://yandex.ru/map-widget/v1/?um=constructor%3A1&source=constructor&ll=104.303%2C52.280&z=17&pt=104.303%2C52.280%2Cpm2orgm';
 
   return React.createElement('div', { style: styles.container }, [
     React.createElement(BackButton, { key: 'back', onClick: onBack }),
@@ -587,11 +612,12 @@ const Contacts = ({ onBack }) => {
       ]),
       React.createElement('div', { key: 'map', style: styles.mapContainer },
         React.createElement('iframe', {
-          src: 'https://yandex.ru/map-widget/v1/?um=constructor%3A1&source=constructor',
+          src: mapUrl,
           width: '100%',
           height: '100%',
           frameBorder: '0',
-          style: { border: 0 }
+          style: { border: 0 },
+          title: 'Карта расположения Арбитражного суда Иркутской области'
         })
       )
     ]),
@@ -600,8 +626,8 @@ const Contacts = ({ onBack }) => {
       React.createElement('div', { key: 'phoneTitle', style: { ...styles.label, marginBottom: '10px', fontWeight: 600 } }, 'Телефоны'),
       ...phones.map((phone, idx) =>
         React.createElement('div', { key: idx, style: styles.phoneRow }, [
-          React.createElement('span', null, phone.dept),
-          React.createElement('span', { style: { fontWeight: 600, color: '#12204D' } }, phone.num)
+          React.createElement('span', { style: styles.phoneDept }, phone.dept),
+          React.createElement('span', { style: styles.phoneNum }, phone.num)
         ])
       )
     ]),
