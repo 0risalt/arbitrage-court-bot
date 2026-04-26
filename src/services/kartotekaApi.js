@@ -3,8 +3,6 @@ import { supabase } from '../lib/supabaseClient'
 
 /**
  * Проверка формата номера дела
- * @param {string} caseNumber - номер дела (например, "А19-12345/2024")
- * @returns {boolean}
  */
 export const validateCaseNumber = (caseNumber) => {
     const pattern = /^[АA]\d{2,3}-\d+\/\d{4}$/;
@@ -12,33 +10,25 @@ export const validateCaseNumber = (caseNumber) => {
 };
 
 /**
- * Получение информации о деле по его номеру
- * @param {string} caseNumber - номер дела
- * @param {AbortSignal} [signal] - сигнал для отмены запроса
- * @returns {Promise<Object|null>} - данные дела или null, если не найдено
+ * Получение информации о деле по номеру
+ * Возвращает объект дела или null, если не найдено
  */
 export const getCaseInfo = async (caseNumber, signal) => {
     try {
-        // Формируем запрос к Supabase
         const query = supabase
             .from('court_cases')
             .select('*')
             .eq('case_number', caseNumber)
-            .maybeSingle(); // ВАЖНО: гарантирует один объект или null
+            .maybeSingle();
 
-        // Применяем AbortSignal, если он передан
         if (signal) {
             query.abortSignal(signal);
         }
 
         const { data, error } = await query;
 
-        if (error) {
-            console.error('Ошибка Supabase:', error.message);
-            throw error;
-        }
+        if (error) throw error;
 
-        // Если запись найдена, преобразуем поля в формат фронтенда
         if (data) {
             return {
                 number: data.case_number,
@@ -58,7 +48,6 @@ export const getCaseInfo = async (caseNumber, signal) => {
         // Дело не найдено
         return null;
     } catch (error) {
-        // Не выводим ошибку, если запрос был отменён
         if (error.name === 'AbortError') {
             console.log('Запрос отменён');
         } else {
@@ -69,21 +58,56 @@ export const getCaseInfo = async (caseNumber, signal) => {
 };
 
 /**
- * Поиск дел по ИНН (заглушка)
+ * Поиск дел по ИНН (точный поиск по полю inn)
  * @param {string} inn - ИНН (10 или 12 цифр)
  * @param {AbortSignal} [signal]
- * @returns {Promise<Array>}
+ * @returns {Promise<Array>} массив найденных дел
  */
 export const searchCasesByInn = async (inn, signal) => {
-    // Пока не реализовано – возвращаем пустой массив
-    console.warn('Функция поиска по ИНН ещё не реализована');
-    return [];
+    try {
+        const query = supabase
+            .from('court_cases')
+            .select('*')
+            .eq('inn', inn)   // точный поиск по полю inn
+            .order('created_at', { ascending: false });
+
+        if (signal) {
+            query.abortSignal(signal);
+        }
+
+        const { data, error } = await query;
+
+        if (error) throw error;
+
+        if (data && data.length > 0) {
+            return data.map(item => ({
+                number: item.case_number,
+                status: item.status,
+                statusCode: item.status_code,
+                judge: item.judge,
+                plaintiff: item.plaintiff,
+                defendant: item.defendant,
+                nextHearing: item.next_hearing
+                    ? new Date(item.next_hearing).toLocaleDateString('ru-RU')
+                    : null,
+                lastEvent: item.last_event,
+                courtActs: item.court_acts
+            }));
+        }
+
+        return []; // если ничего не найдено
+    } catch (error) {
+        if (error.name === 'AbortError') {
+            console.log('Запрос отменён');
+        } else {
+            console.error('Ошибка поиска по ИНН:', error);
+        }
+        throw error;
+    }
 };
 
 /**
- * Возвращает эмодзи для статуса дела
- * @param {string} statusCode - код статуса (hearing, decided и т.д.)
- * @returns {string}
+ * Эмодзи для статуса дела
  */
 export const getStatusEmoji = (statusCode) => {
     const emojiMap = {

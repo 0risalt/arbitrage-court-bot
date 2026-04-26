@@ -247,10 +247,12 @@ const CaseStatus = ({ onBack }) => {
   const [caseData, setCaseData] = useState(null);
   const [error, setError] = useState('');
   const [searchMode, setSearchMode] = useState('number');
+  const [notFound, setNotFound] = useState(false); // новое состояние для сообщения
 
   const handleSearch = async () => {
     setError('');
     setCaseData(null);
+    setNotFound(false); // сбрасываем флаг «не найдено»
 
     if (!caseNumber.trim()) {
       setError('Введите номер дела или ИНН');
@@ -271,7 +273,11 @@ const CaseStatus = ({ onBack }) => {
         }
 
         const data = await getCaseInfo(caseNumber, signal);
-        setCaseData(data);
+        if (data) {
+          setCaseData(data);
+        } else {
+          setNotFound(true); // дело не найдено
+        }
       } else {
         if (!/^\d{10,12}$/.test(caseNumber)) {
           setError('ИНН должен содержать 10 или 12 цифр');
@@ -281,10 +287,11 @@ const CaseStatus = ({ onBack }) => {
 
         const results = await searchCasesByInn(caseNumber, signal);
         if (results.length === 0) {
-          setError('Дел по данному ИНН не найдено');
+          setNotFound(true);
         } else if (results.length === 1) {
           setCaseData(results[0]);
         } else {
+          // Если результатов несколько – показываем первый (в будущем можно вывести список)
           setCaseData(results[0]);
         }
       }
@@ -364,7 +371,15 @@ const CaseStatus = ({ onBack }) => {
       border: '1px solid #e9ecef'
     },
     row: { display: 'flex', justifyContent: 'space-between', marginBottom: '10px' },
-    error: { color: 'red', textAlign: 'center', marginBottom: '15px' }
+    error: { color: 'red', textAlign: 'center', marginBottom: '15px' },
+    notFound: {
+      textAlign: 'center',
+      color: '#6F7B8C',
+      marginTop: '20px',
+      padding: '15px',
+      backgroundColor: '#f8f9fa',
+      borderRadius: '10px'
+    }
   };
 
   return React.createElement('div', { style: styles.container }, [
@@ -415,6 +430,10 @@ const CaseStatus = ({ onBack }) => {
     }, loading ? 'Поиск...' : 'Найти'),
 
     error && React.createElement('div', { key: 'error', style: styles.error }, error),
+
+    notFound && React.createElement('div', { key: 'not-found', style: styles.notFound },
+      'Дело с таким номером / ИНН не найдено. Проверьте правильность ввода.'
+    ),
 
     caseData && React.createElement('div', { key: 'card', style: styles.card }, [
       ['Номер дела:', caseData.number],
@@ -659,6 +678,52 @@ const Help = ({ onBack }) => {
   ]);
 };
 
+// Страница 404
+const NotFound = ({ onBack }) => {
+  const styles = {
+    container: {
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      minHeight: '80vh',
+      padding: '22px',
+      textAlign: 'center'
+    },
+    title: {
+      color: '#12204D',
+      fontSize: '48px',
+      marginBottom: '10px'
+    },
+    message: {
+      color: '#6F7B8C',
+      fontSize: '18px',
+      marginBottom: '30px'
+    },
+    homeButton: {
+      padding: '12px 24px',
+      backgroundColor: '#12204D',
+      color: 'white',
+      border: 'none',
+      borderRadius: '10px',
+      fontSize: '16px',
+      cursor: 'pointer',
+      fontFamily: 'Golos Text, sans-serif'
+    }
+  };
+
+  return React.createElement('div', { style: styles.container }, [
+    React.createElement('h1', { key: 'code', style: styles.title }, '404'),
+    React.createElement('p', { key: 'msg', style: styles.message }, 'Страница не найдена'),
+    React.createElement('button', {
+      key: 'home',
+      onClick: onBack,
+      className: 'button-click-effect',
+      style: styles.homeButton
+    }, 'На главную')
+  ]);
+};
+
 // Основной компонент приложения
 const App = () => {
   const [currentPage, setCurrentPage] = useState('home');
@@ -694,8 +759,12 @@ const App = () => {
   if (currentPage === 'help') {
     return React.createElement(Help, { onBack: goHome });
   }
+  if (currentPage === 'home') {
+    return React.createElement(Home, { onNavigate: navigate });
+  }
 
-  return React.createElement(Home, { onNavigate: navigate });
+  // Любое другое значение → страница 404
+  return React.createElement(NotFound, { onBack: goHome });
 };
 
 // Рендеринг
