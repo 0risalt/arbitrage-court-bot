@@ -1,0 +1,64 @@
+/* Подключаем шрифт Golos Text */
+@import url('https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Golos Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: #f0f2f5;
+}
+
+button,
+input {
+    font-family: 'Golos Text', sans-serif;
+}
+
+/* Анимация появления страницы */
+.fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ============================================
+   ПРОСТАЯ И НАДЕЖНАЯ АНИМАЦИЯ ДЛЯ ВСЕХ КНОПОК
+   Гарантированно работает на любых кнопках, включая SVG
+============================================ */
+.button-click-effect {
+    transition: all 0.12s ease-out !important;
+}
+
+.button-click-effect:active {
+    transform: scale(0.94) !important;
+    filter: brightness(0.85) !important;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Эффект свечения для кнопок при наведении (для десктопа) */
+@media (hover: hover) {
+    button:hover:not(:active) {
+        filter: brightness(0.97);
+        transition: filter 0.2s;
+    }
+}
+
+/* Стили для iframe карты */
+iframe {
+    display: block;
+}
